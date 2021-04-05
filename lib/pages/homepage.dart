@@ -1,5 +1,6 @@
 import 'package:bon_appetit/auth/login.dart';
 import 'package:bon_appetit/pages/admin/admin_navbar.dart';
+import 'package:bon_appetit/pages/kurir/kurir_navbar.dart';
 import 'package:bon_appetit/pages/user/user_navbar.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
@@ -144,7 +145,7 @@ class _HomePageState extends State<HomePage> {
     if (role == 'Admin')
       return NavBarAdmin();
     else if (role == 'Kurir')
-      return NavBarUser();
+      return NavBarKurir();
     else
       return NavBarUser();
   }
@@ -156,7 +157,7 @@ class _HomePageState extends State<HomePage> {
     print(role);
   }
 
-  LoginStatus _loginStatus = LoginStatus.notSignIn;
+  // LoginStatus _loginStatus = LoginStatus.notSignIn;
   @override
   Widget build(BuildContext context) {
     return home();

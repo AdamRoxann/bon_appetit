@@ -1,16 +1,15 @@
 import 'dart:convert';
 
 import 'package:bon_appetit/model/all_kurir_model.dart';
-import 'package:bon_appetit/url.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-class AllKurir extends StatefulWidget {
+class AllOrder extends StatefulWidget {
   @override
-  _AllKurirState createState() => _AllKurirState();
+  _AllOrderState createState() => _AllOrderState();
 }
 
-class _AllKurirState extends State<AllKurir> {
+class _AllOrderState extends State<AllOrder> {
   final GlobalKey<ScaffoldState> _scaffoldkey = new GlobalKey<ScaffoldState>();
   final GlobalKey<RefreshIndicatorState> _refresh =
       GlobalKey<RefreshIndicatorState>();
@@ -21,7 +20,7 @@ class _AllKurirState extends State<AllKurir> {
     setState(() {
       loading = true;
     });
-    final response = await http.get(KurirUrl.show_kurir);
+    final response = await http.get('http://10.0.2.2:8000/api/showkurir');
     if (response.contentLength == 2) {
       //   await getPref();
       // final response =
@@ -54,7 +53,7 @@ class _AllKurirState extends State<AllKurir> {
 
   delete(id) async {
     final response =
-        await http.post(AdminUrl.delete_kurir, body: {
+        await http.post("http://10.0.2.2:8000/api/deletekurir", body: {
       "id": id,
       // "password": password,
     });
@@ -105,7 +104,7 @@ class _AllKurirState extends State<AllKurir> {
         appBar: new AppBar(
           backgroundColor: Colors.black,
           centerTitle: true,
-          title: Text('All Kurir'),
+          title: Text('All Order'),
         ),
         body: RefreshIndicator(
           key: _refresh,
@@ -122,7 +121,7 @@ class _AllKurirState extends State<AllKurir> {
                       leading: Icon(Icons.person),
                       title: Text(x.username),
                       // subtitle: Text(
-                      //   "Vendor" + x.harga
+                      //   "Rp. " + x.harga,
                       //   style:
                       //       TextStyle(color: Colors.black.withOpacity(0.6)),
                       // ),
@@ -160,11 +159,7 @@ class _AllKurirState extends State<AllKurir> {
                     ButtonBar(
                       alignment: MainAxisAlignment.end,
                       children: [
-                        InkWell(
-                            onTap: () {
-                              delete(x.id.toString());
-                            },
-                            child: Text('Hapus kurir')),
+                        Text('Hapus kurir'),
                         InkWell(
                             onTap: () {
                               delete(x.id.toString());

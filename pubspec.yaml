@@ -32,6 +32,8 @@ dependencies:
   shared_preferences: ^0.5.2
   custom_navigation_bar: ^0.2.6
   carousel_slider: ^3.0.0
+  image_picker: ^0.6.5
+  
 
 
 dev_dependencies:

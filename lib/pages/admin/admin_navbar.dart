@@ -1,5 +1,7 @@
+import 'package:bon_appetit/pages/admin/add_menu.dart';
 import 'package:bon_appetit/pages/admin/add_product.dart';
 import 'package:bon_appetit/pages/admin/all_kurir.dart';
+import 'package:bon_appetit/pages/admin/all_order.dart';
 import 'package:bon_appetit/pages/admin/list_product.dart';
 import 'package:custom_navigation_bar/custom_navigation_bar.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +21,8 @@ class _NavBarAdminState extends State<NavBarAdmin> {
     HomePageAdmin(),
     AllProduct(),
     AllKurir(),
-    AddProduct(),
+    AllOrder(),
+    AddMenu(),
   ];
 
   void onTappedBar(int index) {
@@ -56,6 +59,7 @@ class _NavBarAdminState extends State<NavBarAdmin> {
           CustomNavigationBarItem(icon: Icons.home),
           CustomNavigationBarItem(icon: Icons.list_alt),
           CustomNavigationBarItem(icon: Icons.agriculture_rounded),
+          CustomNavigationBarItem(icon: Icons.all_inbox_rounded),
           CustomNavigationBarItem(icon: Icons.api_rounded),
           // CustomNavigationBarItem(icon: Icons.notifications),
           // CustomNavigationBarItem(icon: Icons.person),

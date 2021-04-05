@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:bon_appetit/auth/login.dart';
+import 'package:bon_appetit/url.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -12,7 +13,7 @@ class Register extends StatefulWidget {
 }
 
 class _RegisterState extends State<Register> {
-  LoginStatus _loginStatus = LoginStatus.notSignIn;
+  // LoginStatus _loginStatus = LoginStatus.notSignIn;
   final GlobalKey<ScaffoldState> _scaffoldkey = new GlobalKey<ScaffoldState>();
   final _key = new GlobalKey<FormState>();
   String username, password;
@@ -38,7 +39,7 @@ class _RegisterState extends State<Register> {
       builder: (BuildContext context) => _loading(context),
     );
     final response =
-        await http.post('http://10.0.2.2:8000/api/register', body: {
+        await http.post(LoginUrl.register, body: {
       "username": username,
       "password": password,
       "role": 'Admin',

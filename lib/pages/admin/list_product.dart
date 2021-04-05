@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:bon_appetit/model/all_product_model.dart';
+import 'package:bon_appetit/url.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -20,7 +21,7 @@ class _AllProductState extends State<AllProduct> {
     setState(() {
       loading = true;
     });
-    final response = await http.get('http://10.0.2.2:8000/api/showproduct');
+    final response = await http.get(ProductUrl.show_product);
     if (response.contentLength == 2) {
       //   await getPref();
       // final response =
@@ -41,11 +42,11 @@ class _AllProductState extends State<AllProduct> {
       data.forEach((api) {
         final ab = new ProductModel(
           api['id'],
-          api['nama'],
-          api['harga'],
-          api['deskripsi'],
-          api['image_url'],
-          api['stars'],
+          api['product_name'],
+          api['price'],
+          api['product_description'],
+          api['product_img'],
+          api['category_id'],
         );
         list.add(ab);
       });
@@ -57,7 +58,7 @@ class _AllProductState extends State<AllProduct> {
 
   delete(id) async {
     final response =
-        await http.post("http://10.0.2.2:8000/api/deleteproduct", body: {
+        await http.post(ProductUrl.delete_product, body: {
       "id": id,
       // "password": password,
     });
@@ -120,26 +121,32 @@ class _AllProductState extends State<AllProduct> {
                 itemBuilder: (context, i) {
                   final x = list[i];
                   return
-                      // Text(x.nama);
+                      // Text(x.product_name);
                       Card(
                     clipBehavior: Clip.antiAlias,
                     child: Column(
                       children: [
                         ListTile(
                           // leading: Icon(Icons.arrow_drop_down_circle),
-                          title: Text(x.nama),
+                          title: Text(x.product_name),
                           subtitle: Text(
-                            "Rp. " + x.harga,
+                            "Rp. " + x.price,
                             style:
                                 TextStyle(color: Colors.black.withOpacity(0.6)),
                           ),
                         ),
-                        Image.network(x.image_url),
+                        Image.network(
+                            ImageUrl.product_img +
+                                x.product_img,
+                            errorBuilder: (BuildContext context,
+                                Object exception, StackTrace stackTrace) {
+                          return Text('Your error widget...');
+                        }),
                         Padding(
                           padding:
                               const EdgeInsets.only(bottom: 8.0, top: 15.0),
                           child: Text(
-                            x.deskripsi,
+                            x.product_description,
                             style:
                                 TextStyle(color: Colors.black.withOpacity(0.6)),
                           ),

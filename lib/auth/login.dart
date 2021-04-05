@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:bon_appetit/auth/register.dart';
 import 'package:bon_appetit/pages/homepage.dart';
+import 'package:bon_appetit/url.dart';
 // import 'package:bon_appetit/pages/kurir/homepage_kurir.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -15,6 +16,7 @@ class Login extends StatefulWidget {
 enum LoginStatus { notSignIn, signIn }
 
 class _LoginState extends State<Login> {
+  final GlobalKey<ScaffoldState> _scaffoldkey = new GlobalKey<ScaffoldState>();
   LoginStatus _loginStatus = LoginStatus.notSignIn;
   String username, password;
   String roleAdmin = 'Admin';
@@ -39,7 +41,7 @@ class _LoginState extends State<Login> {
   }
 
   login() async {
-    final response = await http.post("http://10.0.2.2:8000/api/login", body: {
+    final response = await http.post(LoginUrl.login, body: {
       "username": username,
       "password": password,
     });
@@ -47,7 +49,7 @@ class _LoginState extends State<Login> {
     final data = jsonDecode(response.body);
     int value = data['value'];
     String message = data['message'];
-    String changeProf = data['changeProf'];
+    // String changeProf = data['changeProf'];
     String usernameAPI = data['username'];
     String api_keyAPI = data['api_key'];
     String roleAPI = data['role'];
@@ -64,8 +66,17 @@ class _LoginState extends State<Login> {
     } else {
       print("fail");
       print(message);
+      _showToast(message);
       // loginToast(message);
     }
+  }
+
+  _showToast(String toast) {
+    final snackbar = SnackBar(
+      content: new Text(toast),
+      backgroundColor: Colors.red,
+    );
+    _scaffoldkey.currentState.showSnackBar(snackbar);
   }
 
   // loginToast(String toast) {
@@ -131,6 +142,7 @@ class _LoginState extends State<Login> {
     switch (_loginStatus) {
       case LoginStatus.notSignIn:
         return Scaffold(
+          key: _scaffoldkey,
           backgroundColor: Colors.black,
           body: ListView(
             children: [

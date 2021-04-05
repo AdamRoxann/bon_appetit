@@ -1,12 +1,12 @@
 class ProductModel {
   final int id;
-  final String nama;
-  final String harga;
-  final String deskripsi;
-  final String image_url;
-  final String stars;
+  final String product_name;
+  final String price;
+  final String product_description;
+  final String product_img;
+  final String category_id;
   // final String follow_status_user;
 
-  ProductModel(this.id, this.nama, this.harga, this.deskripsi, this.image_url,
-      this.stars);
+  ProductModel(this.id, this.product_name, this.price, this.product_description,
+      this.product_img, this.category_id);
 }

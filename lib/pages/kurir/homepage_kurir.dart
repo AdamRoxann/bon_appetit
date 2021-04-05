@@ -22,7 +22,7 @@ class _HomePageKurirState extends State<HomePageKurir> {
     return Scaffold(
       body: ListView(
         children: [
-          Text('This is Admin'),
+          Text('This is Kurir'),
           Padding(
             padding: const EdgeInsets.only(top: 0),
             child: Align(
