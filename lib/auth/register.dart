@@ -42,7 +42,7 @@ class _RegisterState extends State<Register> {
         await http.post(LoginUrl.register, body: {
       "username": username,
       "password": password,
-      "role": 'Admin',
+      // "role": 'Admin',
     });
 
     final data = jsonDecode(response.body);

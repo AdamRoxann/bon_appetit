@@ -1,6 +1,9 @@
 import 'dart:convert';
 
+import 'package:bon_appetit/model/all_product_model.dart';
 import 'package:bon_appetit/model/category_model.dart';
+import 'package:bon_appetit/pages/user/category_page.dart';
+import 'package:bon_appetit/pages/user/product_detail.dart';
 import 'package:bon_appetit/url.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
@@ -32,7 +35,7 @@ class _HomePageUserState extends State<HomePageUser> {
     String product_descriptionAPI = data['product_description'];
     String product_imgAPI = data['product_img'];
     String category_idAPI = data['category_id'];
-    String priceAPI = data['price'];
+    int priceAPI = data['price'];
     int idAPI = data['id'];
 
     if (value == 1) {
@@ -43,7 +46,7 @@ class _HomePageUserState extends State<HomePageUser> {
           product_description = product_descriptionAPI;
           product_img = product_imgAPI;
           category_id = category_idAPI;
-          price = priceAPI;
+          price = priceAPI.toString();
         });
       }
 
@@ -52,6 +55,50 @@ class _HomePageUserState extends State<HomePageUser> {
       print("fail");
       print(message);
       // loginToast(message);
+    }
+  }
+
+  var loading = false;
+  final list = new List<ProductModel>();
+  Future<void> _allProduct() async {
+    list.clear();
+    setState(() {
+      loading = true;
+    });
+    final response = await http.get(ProductUrl.show_product);
+    if (response.contentLength == 2) {
+      //   await getPref();
+      // final response =
+      //     await http.post("https://dipena.com/flutter/api/updateProfile.php");
+      // await http.post("https://dipena.com/flutter/api/updateProfile.php");
+      //   "user_id": user_id,
+      //   "location_country": location_country,
+      //   "location_city": location_city,
+      //   "location_user_id": user_id
+      // });
+
+      // final data = jsonDecode(response.body);
+      // int value = data['value'];
+      // String message = data['message'];
+      // String changeProf = data['changeProf'];
+    } else {
+      final data = jsonDecode(response.body);
+      data.forEach((api) {
+        final ab = new ProductModel(
+          api['id'],
+          api['product_name'],
+          api['price'],
+          api['product_description'],
+          api['product_img'],
+          api['category_id'],
+        );
+        list.add(ab);
+      });
+      if (this.mounted) {
+        setState(() {
+          loading = false;
+        });
+      }
     }
   }
 
@@ -91,6 +138,7 @@ class _HomePageUserState extends State<HomePageUser> {
   void initState() {
     super.initState();
     newestProduct();
+    _allProduct();
   }
 
   @override
@@ -122,8 +170,7 @@ class _HomePageUserState extends State<HomePageUser> {
                                 : Image.network(
                                     // new_image_url
                                     // 'https://cdn.pixabay.com/photo/2014/10/23/18/05/burger-500054__340.jpg')),
-                                    ImageUrl.product_img +
-                                        product_img,
+                                    ImageUrl.product_img + product_img,
                                     width: double.infinity, fit: BoxFit.fill,
                                   )),
                         Padding(
@@ -206,7 +253,7 @@ class _HomePageUserState extends State<HomePageUser> {
               padding: const EdgeInsets.only(top: 2.0, left: 8.0, right: 8.0),
               child: Container(
                 width: MediaQuery.of(context).size.width / 1.05,
-                height: MediaQuery.of(context).size.height / 2,
+                height: MediaQuery.of(context).size.height / 6,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
                   itemCount: categories.length,
@@ -241,25 +288,159 @@ class _HomePageUserState extends State<HomePageUser> {
                         //     },
                         //   ),
                         // ),
-                        Card(
-                          child: Column(
-                            children: [
-                              Container(
-                                  width: 80,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Image(
-                                      image: AssetImage(
-                                        x.image.toString(),
+                        InkWell(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              new MaterialPageRoute(
+                                builder: (context) =>
+                                    CategoryPage(x.id, x.text),
+                              ),
+                            );
+                          },
+                          child: Card(
+                            child: Column(
+                              children: [
+                                Container(
+                                    width: 80,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Image(
+                                        image: AssetImage(
+                                          x.image.toString(),
+                                        ),
                                       ),
-                                    ),
-                                  )),
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                    top: 4.0, bottom: 4.0),
-                                child: Text(x.text),
-                              )
-                            ],
+                                    )),
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 4.0, bottom: 4.0),
+                                  child: Text(x.text),
+                                )
+                              ],
+                            ),
+                          ),
+                        )
+                      ],
+                    );
+                  },
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Text("Eat well with us!"),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 2.0, left: 8.0, right: 8.0),
+              child: Container(
+                width: MediaQuery.of(context).size.width / 1.05,
+                // height: MediaQuery.of(context).size.height / 5            ,
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  // scrollDirection: Axis.horizontal,AW
+                  itemCount: list.length,
+                  itemBuilder: (context, i) {
+                    final x = list[i];
+                    return Column(
+                      children: <Widget>[
+                        // Padding(
+                        //   padding: const EdgeInsets.symmetric(horizontal: 6),
+                        //   child: FlatButton(
+                        //     // borderSide: BorderSide(
+                        //     color: Colors.black,
+                        //     // ),
+                        //     shape: RoundedRectangleBorder(
+                        //       borderRadius: BorderRadius.circular(5),
+                        //     ),
+                        //     child: Text(
+                        //       x.text,
+                        //       style: TextStyle(
+                        //         color: Colors.white,
+                        //         fontSize: 13,
+                        //         fontFamily: "Poppins Regular",
+                        //       ),
+                        //     ),
+                        //     onPressed: () {
+                        //       // Navigator.push(
+                        //       //   context,
+                        //       //   new MaterialPageRoute(
+                        //       //     builder: (context) => CategoryPage(x),
+                        //       //   ),
+                        //       // );
+                        //     },
+                        //   ),
+                        // ),
+                        InkWell(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              new MaterialPageRoute(
+                                builder: (context) =>
+                                    ProductDetail(x.id.toString()),
+                              ),
+                            );
+                          },
+                          child: Card(
+                            child: Stack(
+                              children: [
+                                ClipRRect(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    child: product_img == null
+                                        ? CircularProgressIndicator()
+                                        : Image.network(
+                                            // new_image_url
+                                            // 'https://cdn.pixabay.com/photo/2014/10/23/18/05/burger-500054__340.jpg')),
+                                            ImageUrl.product_img +
+                                                x.product_img,
+                                            width: double.infinity,
+                                            fit: BoxFit.fill,
+                                          )),
+                                Padding(
+                                  padding: const EdgeInsets.all(15.0),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(5.0),
+                                    child: Container(
+                                        // decoration: BoxDecoration(
+                                        //     color: Colors.black, shape: BoxShape.circle),
+                                        width: 90,
+                                        height: 40,
+                                        color: Colors.black45,
+                                        child: price == null
+                                            ? Center(
+                                                child: Text(
+                                                // 'Rp. ' + new_harga,
+                                                'Rp.',
+                                                style: new TextStyle(
+                                                    color: Colors.white),
+                                              ))
+                                            : Center(
+                                                child: Text(
+                                                // 'Rp. ' + new_harga,
+                                                'Rp.' + x.price.toString(),
+                                                style: new TextStyle(
+                                                    color: Colors.white),
+                                              ))),
+                                  ),
+                                ),
+                                // Container(
+                                //     // width: 80,
+                                //     child: Padding(
+                                //       padding: const EdgeInsets.all(8.0),
+                                //       child: Image(
+                                //         image: NetworkImage(
+                                //           ImageUrl.product_img+
+                                //           x.product_img.toString(),
+                                //         ),
+                                //       ),
+                                //     )),
+                                // Padding(
+                                //   padding: const EdgeInsets.only(
+                                //       top: 4.0, bottom: 4.0),
+                                //   child: Text(x.product_name),
+                                // )
+                              ],
+                            ),
                           ),
                         )
                       ],

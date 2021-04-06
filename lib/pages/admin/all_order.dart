@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import 'package:bon_appetit/model/all_kurir_model.dart';
+import 'package:bon_appetit/model/all_order.dart';
+import 'package:bon_appetit/url.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -14,13 +16,13 @@ class _AllOrderState extends State<AllOrder> {
   final GlobalKey<RefreshIndicatorState> _refresh =
       GlobalKey<RefreshIndicatorState>();
   var loading = false;
-  final list = new List<KurirModel>();
-  Future<void> _allKurir() async {
+  final list = new List<OrderModel>();
+  Future<void> _allOrder() async {
     list.clear();
     setState(() {
       loading = true;
     });
-    final response = await http.get('http://10.0.2.2:8000/api/showkurir');
+    final response = await http.get('http://10.0.2.2:8000/api/showOrder');
     if (response.contentLength == 2) {
       //   await getPref();
       // final response =
@@ -39,9 +41,15 @@ class _AllOrderState extends State<AllOrder> {
     } else {
       final data = jsonDecode(response.body);
       data.forEach((api) {
-        final ab = new KurirModel(
+        final ab = new OrderModel(
           api['id'],
-          api['username'],
+          api['user_id'],
+          api['order_list_id'],
+          api['product_id'],
+          api['quantity'],
+          api['vendor_id'],
+          api['payment_id'],
+          api['status_id'],
         );
         list.add(ab);
       });
@@ -52,8 +60,7 @@ class _AllOrderState extends State<AllOrder> {
   }
 
   delete(id) async {
-    final response =
-        await http.post("http://10.0.2.2:8000/api/deletekurir", body: {
+    final response = await http.post(OrderUrl.delete_order, body: {
       "id": id,
       // "password": password,
     });
@@ -69,7 +76,7 @@ class _AllOrderState extends State<AllOrder> {
       // loginToast(message);
     } else {
       // print("fail");
-      _showToast('Gagal menghapus product');
+      _showToast('Gagal menghapus Order');
       // print(message);
       // loginToast(message);
     }
@@ -94,7 +101,7 @@ class _AllOrderState extends State<AllOrder> {
   @override
   void initState() {
     super.initState();
-    _allKurir();
+    _allOrder();
   }
 
   @override
@@ -108,7 +115,7 @@ class _AllOrderState extends State<AllOrder> {
         ),
         body: RefreshIndicator(
           key: _refresh,
-          onRefresh: _allKurir,
+          onRefresh: _allOrder,
           child: ListView.builder(
             itemCount: list.length,
             itemBuilder: (context, i) {
@@ -119,7 +126,7 @@ class _AllOrderState extends State<AllOrder> {
                   children: [
                     ListTile(
                       leading: Icon(Icons.person),
-                      title: Text(x.username),
+                      title: Text(x.product_id.toString()),
                       // subtitle: Text(
                       //   "Rp. " + x.harga,
                       //   style:
@@ -159,7 +166,7 @@ class _AllOrderState extends State<AllOrder> {
                     ButtonBar(
                       alignment: MainAxisAlignment.end,
                       children: [
-                        Text('Hapus kurir'),
+                        Text('Hapus Order'),
                         InkWell(
                             onTap: () {
                               delete(x.id.toString());

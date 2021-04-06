@@ -52,7 +52,7 @@ class _NavBarUserState extends State<NavBarUser> {
         onTap: onTappedBar,
         items: [
           CustomNavigationBarItem(icon: Icons.home),
-          CustomNavigationBarItem(icon: Icons.card_giftcard),
+          CustomNavigationBarItem(icon: Icons.add_shopping_cart),
           CustomNavigationBarItem(icon: Icons.person),
         ]);
   }

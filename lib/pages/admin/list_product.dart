@@ -57,8 +57,7 @@ class _AllProductState extends State<AllProduct> {
   }
 
   delete(id) async {
-    final response =
-        await http.post(ProductUrl.delete_product, body: {
+    final response = await http.post(ProductUrl.delete_product, body: {
       "id": id,
       // "password": password,
     });
@@ -130,14 +129,12 @@ class _AllProductState extends State<AllProduct> {
                           // leading: Icon(Icons.arrow_drop_down_circle),
                           title: Text(x.product_name),
                           subtitle: Text(
-                            "Rp. " + x.price,
+                            "Rp. " + x.price.toString(),
                             style:
                                 TextStyle(color: Colors.black.withOpacity(0.6)),
                           ),
                         ),
-                        Image.network(
-                            ImageUrl.product_img +
-                                x.product_img,
+                        Image.network(ImageUrl.product_img + x.product_img,
                             errorBuilder: (BuildContext context,
                                 Object exception, StackTrace stackTrace) {
                           return Text('Your error widget...');
